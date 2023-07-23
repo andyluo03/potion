@@ -2,6 +2,11 @@
 #define POTION_CONNECTION
 
 #include <sys/socket.h>
+#include <stdlib.h>
+#include <string>
+#include <cstring>
+#include <iostream>
+#include <unistd.h>
 
 namespace potion {
 namespace http {
