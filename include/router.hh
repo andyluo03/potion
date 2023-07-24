@@ -1,3 +1,6 @@
+#ifndef POTION_ROUTER_H
+#define POTION_ROUTER_H
+
 #include <functional>
 #include <map>
 #include <string>
@@ -12,3 +15,5 @@ class Router {
     std::function<std::string(std::string temporary)> operator[](std::string route);
 };
 }
+
+#endif

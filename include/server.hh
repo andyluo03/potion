@@ -1,5 +1,8 @@
-#include "router.cc"
-#include "connection.cc"
+#ifndef POTION_SERVER
+#define POTION_SERVER
+
+#include "router.hh"
+#include "connection.hh"
 
 #include <semaphore>
 #include <memory>
@@ -28,3 +31,5 @@ class Server {
     potion::Router router;
 };
 }
+
+#endif

@@ -1,10 +1,7 @@
-#ifndef POTION_SERVER
-#define POTION_SERVER
-
 #include "server.hh"
 
-#include "router.cc"
-#include "connection.cc"
+#include "router.hh"
+#include "connection.hh"
 
 #include <semaphore>
 #include <memory>
@@ -62,5 +59,3 @@ void Server::start () {
     }
 }
 }
-
-#endif

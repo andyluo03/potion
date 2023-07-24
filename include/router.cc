@@ -1,6 +1,3 @@
-#ifndef POTION_ROUTER
-#define POTION_ROUTER
-
 #include "router.hh"
 
 #include <functional>
@@ -14,5 +11,3 @@ namespace potion {
         return routes[route];
     }
 };
-
-#endif

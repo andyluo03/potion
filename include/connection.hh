@@ -1,5 +1,5 @@
-#ifndef POTION_CONNECTION
-#define POTION_CONNECTION
+#ifndef POTION_CONNECTION_H
+#define POTION_CONNECTION_H
 
 namespace potion {
 namespace http {
