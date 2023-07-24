@@ -20,12 +20,12 @@
 namespace potion {
 class Server {
     const int PORT;
-    std::counting_semaphore<5>* thread_pool; //pretty sure this is unnecessary
+    std::unique_ptr<std::counting_semaphore<5>> thread_pool; //pretty sure this is unnecessary
     potion::Router router;
 
     public:
     Server (int port) : PORT {port}, 
-                        thread_pool {new std::counting_semaphore<5>(0)} {} //Probably switch to application factory!
+                        thread_pool {std::make_unique<std::counting_semaphore<5>>(0)} {} //Probably switch to application factory!
     
     int add_route(std::string route, std::function<std::string(std::string temporary)> handle) {
         router[route] = handle;
@@ -44,8 +44,9 @@ class Server {
         struct sockaddr_in address = {
             .sin_family = AF_INET, 
             .sin_port = htons(PORT),
-            .sin_addr.s_addr = INADDR_ANY
         };
+
+        address.sin_addr.s_addr = INADDR_ANY;
 
         memset(address.sin_zero, '\0', sizeof(address.sin_zero));
 

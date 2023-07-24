@@ -17,8 +17,8 @@ int handle_connection (int fd) {
     int len = recv(fd, buffer, 4096, 0);
     std::string message(buffer, len);
     free(buffer);
-    char* test = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-    send(fd, test, strlen(test), 0);
+    std::string test = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+    send(fd, test.c_str(), test.size(), 0);
     std::cout << message;
     close(fd);
     return 1;
