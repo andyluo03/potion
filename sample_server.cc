@@ -1,4 +1,4 @@
-#include "include/server.hpp"
+#include "include/server.cc"
 
 int main () {
     potion::Server app(8080);

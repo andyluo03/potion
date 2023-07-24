@@ -1,6 +1,10 @@
 #ifndef POTION_SERVER
 #define POTION_SERVER
 
+
+#include "router.cc"
+#include "connection.cc"
+
 #include <semaphore>
 #include <memory>
 #include <thread>
@@ -12,9 +16,6 @@
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-
-#include "router.hpp"
-#include "connection.hpp"
 
 namespace potion {
 class Server {
@@ -42,8 +43,8 @@ class Server {
 
         struct sockaddr_in address = {
             .sin_family = AF_INET, 
-            .sin_addr.s_addr = INADDR_ANY, 
-            .sin_port = htons(PORT)
+            .sin_port = htons(PORT),
+            .sin_addr.s_addr = INADDR_ANY
         };
 
         memset(address.sin_zero, '\0', sizeof(address.sin_zero));

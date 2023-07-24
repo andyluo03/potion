@@ -1,6 +1,8 @@
 #ifndef POTION_CONNECTION
 #define POTION_CONNECTION
 
+#include "connection.hh"
+
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <string>
