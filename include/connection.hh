@@ -4,6 +4,8 @@
 namespace potion {
 namespace http {
 int handle_connection (int fd);
+
+int handle_connection(int fd, std::function<std::string(std::string)> handler);
 }
 }
 
