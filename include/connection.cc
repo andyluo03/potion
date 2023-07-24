@@ -20,5 +20,19 @@ int handle_connection (int fd) {
     close(fd);
     return 1;
 }
+
+
+int handle_connection(int fd, std::function<std::string(std::string)> handler){
+    char* buffer = (char*) malloc(4096);
+    int len = recv(fd, buffer, 4096, 0);
+    std::string message(buffer, len);
+    free(buffer);
+    std::string output = handler(message);
+    send(fd, output.c_str(), output.size(), 0);
+    std::cout << output;
+    close(fd);
+    return 1;
+}
+
 }
 }
