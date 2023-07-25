@@ -1,7 +1,6 @@
 #ifndef POTION_SERVER
 #define POTION_SERVER
 
-#include "router.hh"
 #include "connection.hh"
 
 #include <semaphore>
@@ -9,6 +8,7 @@
 #include <thread>
 #include <iostream>
 #include <functional>
+#include <map>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -28,7 +28,7 @@ class Server {
     private:
     const int PORT;
     std::unique_ptr<std::counting_semaphore<5>> thread_pool;
-    potion::Router router;
+    std::map<std::string, std::function<std::string(std::string)>> router;
 };
 }
 

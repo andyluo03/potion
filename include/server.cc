@@ -1,6 +1,5 @@
 #include "server.hh"
 
-#include "router.hh"
 #include "connection.hh"
 
 #include <semaphore>
@@ -19,8 +18,11 @@ namespace potion {
 Server::Server (int port) : PORT {port}, 
                     thread_pool {std::make_unique<std::counting_semaphore<5>>(0)} {} //Probably switch to application factory!
 
-int Server::add_route(std::string route, std::function<std::string(std::string temporary)> handle) {
-    router[route] = handle;
+int Server::add_route(std::string route, std::function<std::string(std::string temporary)> handler) {
+    if(router.find(route) != router.end()){
+        std::cout << "Route already exists! Overwriting...";
+    }
+    router[route] = handler;
     return 1;
 }
 
@@ -54,8 +56,9 @@ void Server::start () {
     
     while (true) {
         int request_fd = accept(server_fd, (struct sockaddr * )&address, (socklen_t*)&address_length);
-        std::thread request_handler(potion::http::handle_connection, request_fd);
-        request_handler.detach();
+        auto route = router["Hello World"];
+        std::thread handler(potion::connection::handle_connection, request_fd, route);
+        handler.detach();
     }
 }
 }

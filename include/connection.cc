@@ -8,19 +8,7 @@
 #include <unistd.h>
 
 namespace potion {
-namespace http {
-int handle_connection (int fd) {
-    char* buffer = (char*) malloc(4096);
-    int len = recv(fd, buffer, 4096, 0);
-    std::string message(buffer, len);
-    free(buffer);
-    std::string test = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-    send(fd, test.c_str(), test.size(), 0);
-    std::cout << message;
-    close(fd);
-    return 1;
-}
-
+namespace connection {
 
 int handle_connection(int fd, std::function<std::string(std::string)> handler){
     char* buffer = (char*) malloc(4096);
@@ -29,7 +17,7 @@ int handle_connection(int fd, std::function<std::string(std::string)> handler){
     free(buffer);
     std::string output = handler(message);
     send(fd, output.c_str(), output.size(), 0);
-    std::cout << output;
+    std::cout << message;
     close(fd);
     return 1;
 }
