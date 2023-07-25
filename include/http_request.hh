@@ -1,6 +1,8 @@
 #ifndef POTION_HTTP_H
 #define POTION_HTTP_H
 
+#include "uri.hh"
+
 #include <string>
 #include <map>
 #include <type_traits>
@@ -32,22 +34,32 @@ public:
 
 HttpRequest(const std::string& raw_request);
 
+Uri uri() const { return uri_; }
+HttpMethod method() const { return method_; }
+HttpVersion version() const { return version_; }
+std::string body() const { return body_; }
+std::string header(const std::string& key) const { return headers_.at(key); }
+
 private:
 
 void ParseRequest(const std::string& raw_request);
-HttpMethod StringToMethod();
-HttpVersion StringToVersion();
+void ParseRequestLine(const std::string& raw_request);
+void ParseHeaders(const std::string& raw_request);
 
-std::string uri() const { return uri_; }
-HttpMethod method() const { return method_; }
+HttpMethod StringToMethod(const std::string& method);
+HttpVersion StringToVersion(const std::string& version);
+
 
 // members
 HttpMethod method_;
 HttpVersion version_;
-std::string uri_;
+Uri uri_ = Uri();
 std::map<std::string, std::string> headers_;
+std::string body_;
 
 };
+
+
 }
 
 #endif
