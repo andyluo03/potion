@@ -7,6 +7,7 @@
 #include <thread>
 #include <iostream>
 #include <functional>
+#include <utility>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -15,9 +16,8 @@
 #include <netdb.h>
 
 namespace potion {
-Server::Server (int port) : PORT {port}, 
-                    thread_pool {std::make_unique<std::counting_semaphore<5>>(0)},
-                    handler_{} {} //Probably switch to application factory!
+Server::Server (int port) : PORT {port},
+                    handler_{} {}
 
 void Server::start () {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);

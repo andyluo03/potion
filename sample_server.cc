@@ -1,6 +1,8 @@
 #include "include/server.hh"
 #include "include/http_request.hh"
 
+#include <string>
+
 int main () {
     potion::Server app(8080);
 

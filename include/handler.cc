@@ -4,16 +4,21 @@
 
 #include <string>
 #include <map>
-#include <sys/socket.h>
-#include <stdlib.h>
+#include <memory>
 #include <string>
 #include <cstring>
 #include <iostream>
+
+#include <sys/socket.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 namespace potion {
 
+Handler::Handler() : thread_pool_ {std::make_unique<std::counting_semaphore<8>>(8)} {}
+
 int Handler::handle_connection(int fd){
+    thread_pool_->acquire();
     char* raw_request = (char*) malloc(4096);
     size_t len = recv(fd, raw_request, 4096, 0);
     HttpRequest request(std::string(raw_request, len));
@@ -28,6 +33,7 @@ int Handler::handle_connection(int fd){
 
     send(fd, result.c_str(), result.size(), 0);
     close(fd);
+    thread_pool_->release();
     return 1;
 }
 
