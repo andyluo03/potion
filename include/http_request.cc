@@ -1,7 +1,7 @@
 #include "http_request.hh"
 
 #include <sstream>
-#include <iostream>
+// #include <iostream>
 
 
 namespace potion {
@@ -31,10 +31,9 @@ void HttpRequest::ParseRequest(const std::string& raw_request) {
 
     // get headers
     if (raw_request.size() > start) {
-        std::string header_line = raw_request.substr(start,raw_request.size() - 1);
-        end = header_line.find("\r\n\r\n");
-        headers = raw_request.substr(start, end);
-        start = start + end + 4;
+        end = raw_request.find("\r\n\r\n");
+        headers = raw_request.substr(start, end - start);
+        start = end + 4;
     }
 
     // get body
@@ -45,12 +44,11 @@ void HttpRequest::ParseRequest(const std::string& raw_request) {
     ParseRequestLine(request_line);
     ParseHeaders(headers);
     body_ = body;
-    std::cout << body << std:: endl;
 
-    //std::cout << uri_.path() << std::endl;
-    //std::cout << uri_.host() << std::endl;
-    //std::cout << uri_.port() << std::endl;
-    //std::cout << uri_.uri() << std::endl;
+    // std::cout << uri_.path() << std::endl;
+    // std::cout << uri_.host() << std::endl;
+    // std::cout << uri_.port() << std::endl;
+    // std::cout << uri_.uri() << std::endl;
 }
 
 void HttpRequest::ParseRequestLine(const std::string& req_line) {
@@ -63,7 +61,7 @@ void HttpRequest::ParseRequestLine(const std::string& req_line) {
     uri_.SetPath(path);
     version_ = StringToVersion(version);
 
-    std::cout << method << " " << path << " " << version << std::endl;
+    // std::cout << method << " " << path << " " << version << std::endl;
 }
 
 void HttpRequest::ParseHeaders(const std::string& headers) {
@@ -71,9 +69,7 @@ void HttpRequest::ParseHeaders(const std::string& headers) {
     // Host: localhost:8080\r\n
     // Content-Type: application/json\r\n
     // Content-Length: 36\r\n
-    if(headers == ""){
-        return;
-    }
+
     std::istringstream iss(headers);
     std::string line;
     while (std::getline(iss, line)) {
@@ -94,7 +90,7 @@ void HttpRequest::ParseHeaders(const std::string& headers) {
             uri_.SetPort(port);
         }
 
-        std::cout << key << " " << value << std::endl;
+        // std::cout << key << " " << value << std::endl;
 
         headers_[key] = value;
     }
