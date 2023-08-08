@@ -1,7 +1,7 @@
 #ifndef POTION_SERVER
 #define POTION_SERVER
 
-#include "connection.hh"
+#include "handler.hh"
 
 #include <semaphore>
 #include <memory>
@@ -18,17 +18,22 @@
 
 namespace potion {
 class Server {
-    public:
-    Server (int port);
-    
-    int add_route(std::string route, std::function<std::string(std::string temporary)> handle);
+public:
+Server (int port);
 
-    void start ();
+Server (Server &other) = delete;
+Server () = delete;
+void operator=(const Server&) = delete;
 
-    private:
-    const int PORT;
-    std::unique_ptr<std::counting_semaphore<5>> thread_pool;
-    std::map<std::string, std::function<std::string(std::string)>> router;
+static int add_route(std::string route, 
+                        std::function<std::string(potion::HttpRequest)> func);
+
+static void start ();
+
+protected:
+static Handler handler_;
+static int port_;
+void static cleanup (int signum);
 };
 }
 

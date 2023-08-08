@@ -1,12 +1,14 @@
 #include "server.hh"
 
-#include "connection.hh"
+#include "handler.hh"
 
 #include <semaphore>
 #include <memory>
 #include <thread>
 #include <iostream>
 #include <functional>
+#include <utility>
+#include <csignal>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -15,15 +17,19 @@
 #include <netdb.h>
 
 namespace potion {
-Server::Server (int port) : PORT {port}, 
-                    thread_pool {std::make_unique<std::counting_semaphore<5>>(0)} {} //Probably switch to application factory!
+Handler Server::handler_;
+int Server::port_;
 
-int Server::add_route(std::string route, std::function<std::string(std::string temporary)> handler) {
-    if(router.find(route) != router.end()){
-        std::cout << "Route already exists! Overwriting...";
-    }
-    router[route] = handler;
-    return 1;
+Server::Server (int port)
+{
+    std::signal(SIGINT, this->cleanup);
+    Server::port_ = port;
+}
+
+int Server::add_route(std::string route, 
+                        std::function<std::string(potion::HttpRequest)> func)
+{
+    return Server::handler_.add_route(route, func);
 }
 
 void Server::start () {
@@ -37,7 +43,7 @@ void Server::start () {
 
     struct sockaddr_in address = {
         .sin_family = AF_INET, 
-        .sin_port = htons(PORT),
+        .sin_port = htons(Server::port_),
     };
 
     address.sin_addr.s_addr = INADDR_ANY;
@@ -56,9 +62,18 @@ void Server::start () {
     
     while (true) {
         int request_fd = accept(server_fd, (struct sockaddr * )&address, (socklen_t*)&address_length);
-        auto route = router["Hello World"];
-        std::thread handler(potion::connection::handle_connection, request_fd, route);
-        handler.detach();
+        std::thread handle_connection(
+            [](int fd){
+                handler_.handle_connection(fd);
+            }, request_fd);
+        handle_connection.detach();
     }
 }
+
+void Server::cleanup (int signum) {
+    std::cout << "Program interrupted. Cleaning Up..." << std::endl;
+    close(Server::port_);
+    std::cout << "Exiting..." << std::endl; 
+    exit(signum);
 }
+} //potion
