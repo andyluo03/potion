@@ -1,7 +1,7 @@
 CXX = g++
 INCLUDES=-Iinclude
 CXXFLAGS = -std=c++20
-OPLEV = -o1
+OPLEV = -O2
 
 # Linking Commands
 
