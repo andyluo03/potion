@@ -27,7 +27,6 @@ class Server {
 
     private:
     const int PORT;
-    std::unique_ptr<std::counting_semaphore<5>> thread_pool;
 };
 }
 
