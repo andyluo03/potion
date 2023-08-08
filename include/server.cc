@@ -8,6 +8,7 @@
 #include <iostream>
 #include <functional>
 #include <utility>
+#include <csignal>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,8 +17,19 @@
 #include <netdb.h>
 
 namespace potion {
-Server::Server (int port) : PORT {port},
-                    handler_{} {}
+Handler Server::handler_;
+int Server::port_;
+
+Server::Server (int port)
+{
+    std::signal(SIGINT, this->cleanup);
+    Server::port_ = port;
+}
+
+void Server::cleanup (int signum) {
+    close(Server::port_);
+    exit(signum);
+}
 
 void Server::start () {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -30,7 +42,7 @@ void Server::start () {
 
     struct sockaddr_in address = {
         .sin_family = AF_INET, 
-        .sin_port = htons(PORT),
+        .sin_port = htons(Server::port_),
     };
 
     address.sin_addr.s_addr = INADDR_ANY;
@@ -50,8 +62,8 @@ void Server::start () {
     while (true) {
         int request_fd = accept(server_fd, (struct sockaddr * )&address, (socklen_t*)&address_length);
         std::thread handle_connection(
-            [this](int a){
-                this->handler_.handle_connection(a);
+            [](int fd){
+                handler_.handle_connection(fd);
             }, request_fd);
         handle_connection.detach();
     }

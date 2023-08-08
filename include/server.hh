@@ -18,15 +18,21 @@
 
 namespace potion {
 class Server {
-    public:
-    Server (int port);
+public:
+Server (int port);
 
-    void start ();
+Server (Server &other) = delete;
+Server () = delete;
+void operator=(const Server&) = delete;
 
-    Handler handler_;
+static void start ();
 
-    private:
-    const int PORT;
+static int add_route(std::string route, 
+                        std::function<std::string(potion::HttpRequest)> func);
+
+static Handler handler_;
+static int port_;
+void static cleanup (int signum);
 };
 }
 
