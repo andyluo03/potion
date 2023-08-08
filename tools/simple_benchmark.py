@@ -1,7 +1,7 @@
 import requests
 
 def latency():
-    URI = 'http://localhost:5000'
+    URI = 'http://localhost:8080'
     ENDPOINT = '/test'
     REQ_NUM = 30000
     time = 0
