@@ -25,11 +25,12 @@ Server (Server &other) = delete;
 Server () = delete;
 void operator=(const Server&) = delete;
 
-static void start ();
-
 static int add_route(std::string route, 
                         std::function<std::string(potion::HttpRequest)> func);
 
+static void start ();
+
+protected:
 static Handler handler_;
 static int port_;
 void static cleanup (int signum);

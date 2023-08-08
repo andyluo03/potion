@@ -26,9 +26,10 @@ Server::Server (int port)
     Server::port_ = port;
 }
 
-void Server::cleanup (int signum) {
-    close(Server::port_);
-    exit(signum);
+int Server::add_route(std::string route, 
+                        std::function<std::string(potion::HttpRequest)> func)
+{
+    return Server::handler_.add_route(route, func);
 }
 
 void Server::start () {
@@ -68,4 +69,11 @@ void Server::start () {
         handle_connection.detach();
     }
 }
+
+void Server::cleanup (int signum) {
+    std::cout << "Program interrupted. Cleaning Up..." << std::endl;
+    close(Server::port_);
+    std::cout << "Exiting..." << std::endl; 
+    exit(signum);
 }
+} //potion
