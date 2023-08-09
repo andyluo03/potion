@@ -1,11 +1,11 @@
-CXX = g++
+CXX = clang++
 INCLUDES=-Iinclude
 CXXFLAGS = -std=c++20
 OPLEV = -O2
 
 # Linking Commands
 
-exec: include/connection.cc include/http_request.cc include/server.cc sample_server.cc
+exec: include/http_request.cc include/server.cc include/handler.cc sample_server.cc 
 	$(CXX) $(CXXFLAGS) $^ $(OPLEV)
 
 
