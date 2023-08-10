@@ -61,7 +61,7 @@ void HttpRequest::ParseRequestLine(const std::string& req_line) {
         throw std::invalid_argument("Invalid HTTP version");
     }
     method_ = StringToMethod(method);
-    uri_.SetPath(path); 
+    uri_.set_path(path); 
 
     // std::cout << method << " " << path << " " << version << std::endl;
 }
@@ -88,8 +88,8 @@ void HttpRequest::ParseHeaders(const std::string& headers) {
             size_t pos = value.find(":");
             std::string host = value.substr(0, pos);
             std::string port = value.substr(pos + 1);
-            uri_.SetHost(host);
-            uri_.SetPort(port);
+            uri_.set_host(host);
+            uri_.set_port(port);
         }
 
         // std::cout << key << " " << value << std::endl;
@@ -124,4 +124,4 @@ HttpMethod HttpRequest::StringToMethod(const std::string& method) {
 }
 
 
-}
+} // namespace potion

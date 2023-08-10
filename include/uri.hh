@@ -8,9 +8,9 @@ namespace potion {
 class Uri {
 public:
 
-void SetPath(const std::string& path) { path_ = path; }
-void SetHost(const std::string& host) { host_ = host; }
-void SetPort(const std::string& port) { port_ = port; }
+void set_path(const std::string& path) { path_ = path; }
+void set_host(const std::string& host) { host_ = host; }
+void set_port(const std::string& port) { port_ = port; }
 
 std::string path() const { return path_; }
 std::string host() const { return host_; }
@@ -26,6 +26,6 @@ std::string port_;
 };
 
 
-}
+} // namespace potion
 
 #endif

@@ -25,8 +25,10 @@ enum class HttpMethod {
 class HttpRequest {
 public:
 
+// constructor
 HttpRequest(const std::string& raw_request);
 
+// accessors
 Uri uri() const { return uri_; }
 HttpMethod method() const { return method_; }
 std::string version() const { return "HTTP/1.0"; }
@@ -50,6 +52,6 @@ std::string body_;
 };
 
 
-}
+} // namespace potion
 
 #endif
