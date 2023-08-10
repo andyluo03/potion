@@ -14,7 +14,7 @@ void HttpRequest::ParseRequest(const std::string& raw_request) {
     // input is a raw http request
     // format: 
     //
-    // GET /path HTTP/1.1\r\n
+    // GET /path HTTP/1.0\r\n
     // Host: localhost:8080\r\n
     // Content-Type: application/json\r\n
     // Content-Length: 36\r\n
@@ -52,14 +52,16 @@ void HttpRequest::ParseRequest(const std::string& raw_request) {
 }
 
 void HttpRequest::ParseRequestLine(const std::string& req_line) {
-    // format: GET /path HTTP/1.1
+    // format: GET /path HTTP/1.0
 
     std::istringstream iss(req_line);
     std::string method, path, version;
     iss >> method >> path >> version;
+    if (version != "HTTP/1.0") {
+        throw std::invalid_argument("Invalid HTTP version");
+    }
     method_ = StringToMethod(method);
-    uri_.SetPath(path);
-    version_ = StringToVersion(version);
+    uri_.SetPath(path); 
 
     // std::cout << method << " " << path << " " << version << std::endl;
 }
@@ -118,18 +120,6 @@ HttpMethod HttpRequest::StringToMethod(const std::string& method) {
         return HttpMethod::PATCH;
     } else {
         throw std::invalid_argument("Invalid HTTP method");
-    }
-}
-
-HttpVersion HttpRequest::StringToVersion(const std::string& version) {
-    if (version == "HTTP/1.0") {
-        return HttpVersion::HTTP_1_0;
-    } else if (version == "HTTP/1.1") {
-        return HttpVersion::HTTP_1_1;
-    } else if (version == "HTTP/2.0") {
-        return HttpVersion::HTTP_2_0;
-    } else {
-        throw std::invalid_argument("Invalid HTTP version");
     }
 }
 
