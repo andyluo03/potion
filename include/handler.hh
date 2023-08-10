@@ -22,9 +22,9 @@ int add_route(std::string route,
                 std::function<std::string(potion::HttpRequest)> func);
 
 private:
-std::map<std::string, std::function<std::string(potion::HttpRequest)>> router_;
+std::map<std::string, std::function<std::string(potion::HttpRequest)> > router_;
 
-std::unique_ptr<std::counting_semaphore<8>> thread_pool_;
+std::unique_ptr<std::counting_semaphore<8> > thread_pool_;
 };
 } //potion
 

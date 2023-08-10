@@ -15,6 +15,7 @@
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
 
 namespace potion {
 Handler Server::handler_;
