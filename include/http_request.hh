@@ -1,11 +1,11 @@
-#ifndef POTION_HTTP_H
-#define POTION_HTTP_H
+#ifndef POTION_HTTP_REQ_H
+#define POTION_HTTP_REQ_H
+
+#include <map>
+#include <string>
+#include <type_traits>
 
 #include "uri.hh"
-
-#include <string>
-#include <map>
-#include <type_traits>
 
 namespace potion {
 
@@ -21,45 +21,34 @@ enum class HttpMethod {
     PATCH
 };
 
-// might vause error bc HTTP_1_0 has same value as GET
-enum class HttpVersion {
-    HTTP_1_0,
-    HTTP_1_1,
-    HTTP_2_0
-};
-
-
 class HttpRequest {
-public:
+   public:
+    // constructor
+    explicit HttpRequest(const std::string& raw_request);
 
-HttpRequest(const std::string& raw_request);
+    // accessors
+    Uri uri() const { return uri_; }
+    HttpMethod method() const { return method_; }
+    static std::string version() { return "HTTP/1.0"; }
+    std::string body() const { return body_; }
+    std::string header(const std::string& key) const {
+        return headers_.at(key);
+    }
 
-Uri uri() const { return uri_; }
-HttpMethod method() const { return method_; }
-HttpVersion version() const { return version_; }
-std::string body() const { return body_; }
-std::string header(const std::string& key) const { return headers_.at(key); }
+   private:
+    void ParseRequest(const std::string& raw_request);
+    void ParseRequestLine(const std::string& req_line);
+    void ParseHeaders(const std::string& headers);
 
-private:
+    HttpMethod StringToMethod(const std::string& method);
 
-void ParseRequest(const std::string& raw_request);
-void ParseRequestLine(const std::string& raw_request);
-void ParseHeaders(const std::string& raw_request);
-
-HttpMethod StringToMethod(const std::string& method);
-HttpVersion StringToVersion(const std::string& version);
-
-
-// members
-HttpMethod method_;
-HttpVersion version_;
-Uri uri_ = Uri();
-std::map<std::string, std::string> headers_;
-std::string body_;
-
+    // members
+    HttpMethod method_;
+    Uri uri_ = Uri();
+    std::map<std::string, std::string> headers_;
+    std::string body_;
 };
 
-
-}
+}  // namespace potion
 
 #endif
